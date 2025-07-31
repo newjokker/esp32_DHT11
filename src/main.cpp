@@ -26,7 +26,7 @@ const char* serverUrl = "http://8.153.160.138:12345/iot_data";
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT dht(DHTPIN, DHTTYPE);
 
-#define SLEEP_DURATION 30 
+#define SLEEP_DURATION 60*30   
 
 bool connectWiFi() {
   if (WiFi.status() == WL_CONNECTED) return true;
