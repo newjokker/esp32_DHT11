@@ -10,5 +10,7 @@ platformio lib install "Adafruit SSD1306"
 
 platformio lib install "DHT sensor library"
 
+platformio lib install "PubSubClient"
+
 ```
 
