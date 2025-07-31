@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESP32-S3 控制面板</title>
+  <style>
+    body { 
+      font-family: Arial; 
+      text-align: center; 
+      margin: 0 auto; 
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .button {
+      padding: 12px 24px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    .button:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+    .button-off { 
+      background-color: #f44336; 
+    }
+    .status { 
+      font-size: 18px; 
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e8f5e9;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .info {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ESP32-S3 控制面板</h1>
+    <p>欢迎使用ESP32-S3 Web控制界面</p>
+    
+    <div>
+      <button class="button" onclick="controlLED('on')">打开 LED</button>
+      <button class="button button-off" onclick="controlLED('off')">关闭 LED</button>
+    </div>
+    
+    <div class="status" id="ledStatus">LED 状态: 未知</div>
+    
+    <div class="info">
+      <p>IP地址: <span id="ipAddress">加载中...</span></p>
+      <p>信号强度: <span id="wifiStrength">加载中...</span></p>
+    </div>
+  </div>
+  
+  <script>
+    function controlLED(state) {
+      fetch('/led?state=' + state)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('ledStatus').innerText = 'LED 状态: ' + data;
+        });
+    }
+    
+    function updateSystemInfo() {
+      fetch('/systemInfo')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('ipAddress').textContent = data.ip;
+          document.getElementById('wifiStrength').textContent = data.rssi + ' dBm';
+        });
+    }
+    
+    // 初始加载时获取LED状态和系统信息
+    window.onload = function() {
+      fetch('/ledStatus')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('ledStatus').innerText = 'LED 状态: ' + data;
+        });
+      
+      updateSystemInfo();
+      // 每10秒更新一次系统信息
+      setInterval(updateSystemInfo, 10000);
+    };
+  </script>
+</body>
+</html>
