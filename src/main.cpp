@@ -17,8 +17,10 @@
 #define DHTTYPE DHT11
 
 // WiFi配置
-const char* ssid = "Saturn-Guest-2.4g";
-const char* password = "Tuxingkeji-0918";
+// const char* ssid = "Saturn-Guest-2.4g";
+// const char* password = "Tuxingkeji-0918";
+const char* ssid = "LDQ-AP";
+const char* password = "747225581";
 
 // 目标服务配置
 const char* serverUrl = "http://8.153.160.138:12345/iot_data";
@@ -26,7 +28,8 @@ const char* serverUrl = "http://8.153.160.138:12345/iot_data";
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT dht(DHTPIN, DHTTYPE);
 
-#define SLEEP_DURATION 60*30   
+// #define SLEEP_DURATION 60*30   
+#define SLEEP_DURATION 60 * 5 // 5分钟深度睡眠
 
 bool connectWiFi() {
   if (WiFi.status() == WL_CONNECTED) return true;
@@ -38,7 +41,7 @@ bool connectWiFi() {
   WiFi.begin(ssid, password);
   
   unsigned long startTime = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) { // 10秒超时
+  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 5000) { // 5秒超时
     delay(200);
     Serial.print(".");
   }
@@ -70,7 +73,7 @@ bool sendToService(float temperature, float humidity) {
   http.addHeader("Content-Type", "application/json");
   
   // 创建JSON数据
-  String jsonData = "{\"device_id\":\"ESP32-DHT11\"," 
+  String jsonData = "{\"device_id\":\"ESP32S3_DHT11\"," 
                    "\"temperature\":" + String(temperature) + 
                    ",\"humidity\":" + String(humidity) + "}";
   
